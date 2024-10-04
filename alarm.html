@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alarm Clock</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+        height: 100vh;
+        margin: 0;
+        display: flex;
+        flex-direction: column; /* Stack navbar and container vertically */
+        align-items: center;
+        justify-content: flex-start; /* Align items to the top */
+        color: white;
+      }
+
+      .navbar {
+        background-color: #333; /* Dark background for the navbar */
+        color: white; /* White text color */
+        padding: 15px 20px; /* Padding for the navbar */
+        position: sticky; /* Make the navbar stick to the top */
+        top: 0; /* Stick to the top */
+        width: 100%; /* Full width */
+        z-index: 1000; /* Ensure it stays above other elements */
+      }
+
+      .container {
+        background: rgba(0, 0, 0, 0.6);
+        padding: 40px;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+        margin-top: 20px; /* Add space below the navbar */
+      }
+
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+
+      #current-time {
+        font-size: 3em;
+        margin: 20px 0;
+      }
+
+      .input-time {
+        padding: 10px;
+        font-size: 1.2em;
+        margin-right: 10px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+      }
+
+      button {
+        padding: 12px 20px;
+        font-size: 1.2em;
+        background: #39ff14;
+        border: none;
+        border-radius: 5px;
+        color: #333;
+        cursor: pointer;
+        margin: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+
+      button:hover {
+        background: #2ecc71;
+        transform: translateY(-3px);
+      }
+
+      button:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container1">
+        <h1 class="logo">Clock-</h1>
+        <ul
+          class="nav-links"
+          style="list-style: none; display: flex; padding: 0"
+        >
+          <li style="margin: 0 15px">
+            <a href="alarm.html" style="color: white; text-decoration: none"
+              >Alarm</a
+            >
+          </li>
+          <li style="margin: 0 15px">
+            <a href="stopwatch.html" style="color: white; text-decoration: none"
+              >Stopwatch</a
+            >
+          </li>
+          <li style="margin: 0 15px">
+            <a href="timer.html" style="color: white; text-decoration: none"
+              >Timer</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1>Alarm Clock</h1>
+
+      <!-- Display Current Time -->
+      <div id="current-time">00:00:00 AM</div>
+
+      <!-- Alarm Set Input Fields -->
+      <input type="time" id="alarm-time" class="input-time" />
+
+      <!-- Set and Clear Buttons -->
+      <button id="set-alarm">Set Alarm</button>
+      <button id="clear-alarm" disabled>Clear Alarm</button>
+    </div>
+
+    <!-- Audio for Alarm Sound -->
+    <audio
+      id="alarm-sound"
+      src="https://www.soundjay.com/button/sounds/beep-07.mp3"
+      preload="auto"
+    ></audio>
+
+    <script>
+      const currentTimeDisplay = document.getElementById("current-time");
+      const alarmTimeInput = document.getElementById("alarm-time");
+      const setAlarmButton = document.getElementById("set-alarm");
+      const clearAlarmButton = document.getElementById("clear-alarm");
+      const alarmSound = document.getElementById("alarm-sound");
+
+      let alarmTime = null;
+      let alarmTimeout = null;
+
+      // Update the current time every second
+      function updateCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+        const formattedTime = `${
+          formattedHours < 10 ? "0" : ""
+        }${formattedHours}:${minutes < 10 ? "0" : ""}${minutes}:${
+          seconds < 10 ? "0" : ""
+        }${seconds} ${ampm}`;
+        currentTimeDisplay.textContent = formattedTime;
+      }
+
+      // Check if current time matches the alarm time
+      function checkAlarm() {
+        const now = new Date();
+        const currentHours = now.getHours();
+        const currentMinutes = now.getMinutes();
+        const alarmHours = parseInt(alarmTime.split(":")[0]);
+        const alarmMinutes = parseInt(alarmTime.split(":")[1]);
+
+        if (currentHours === alarmHours && currentMinutes === alarmMinutes) {
+          // Trigger the alarm
+          alarmSound.play();
+          alert("Alarm! Time to wake up!");
+          clearAlarm();
+        }
+      }
+
+      // Set alarm
+      setAlarmButton.addEventListener("click", () => {
+        alarmTime = alarmTimeInput.value;
+        if (!alarmTime) {
+          alert("Please select a valid time to set the alarm.");
+          return;
+        }
+        alarmTimeout = setInterval(checkAlarm, 1000);
+        setAlarmButton.disabled = true;
+        clearAlarmButton.disabled = false;
+        alarmTimeInput.disabled = true;
+        alert(`Alarm set for ${alarmTime}`);
+      });
+
+      // Clear alarm
+      clearAlarmButton.addEventListener("click", clearAlarm);
+
+      function clearAlarm() {
+        clearInterval(alarmTimeout);
+        alarmTimeout = null;
+        alarmTime = null;
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+        setAlarmButton.disabled = false;
+        clearAlarmButton.disabled = true;
+        alarmTimeInput.disabled = false;
+        alarmTimeInput.value = "";
+      }
+
+      // Initial call to display time and then update every second
+      setInterval(updateCurrentTime, 1000);
+    </script>
+  </body>
+</html>

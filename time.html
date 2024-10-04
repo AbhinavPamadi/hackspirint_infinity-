@@ -3,7 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Modern Digital Clock with Stylish Themes</title>
+    <title>
+      Advanced Digital Clock with Timezones, Borders, and Pause Feature
+    </title>
     <style>
       /* General Body and Layout Styles */
       body {
@@ -14,37 +16,73 @@
         justify-content: center;
         height: 100vh;
         margin: 0;
-        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        transition: background-color 0.3s ease, background 0.3s ease;
+        transition: background-color 0.3s ease;
+      }
+
+      .navbar {
+        background-color: #333; /* Dark background for the navbar */
+        color: white; /* White text color */
+        padding: 15px 20px; /* Padding for the navbar */
+        position: flex; /* For absolute positioning of dropdown */
+      }
+
+      .container1 {
+        display: flex; /* Flexbox for horizontal alignment */
+        justify-content: space-between; /* Space between elements */
+        align-items: center; /* Center items vertically */
+        max-width: 1200px; /* Max width for large screens */
+        margin: auto; /* Center the container */
+      }
+
+      .logo {
+        font-size: 1.5em; /* Logo size */
+      }
+
+      .nav-links {
+        list-style: none; /* Remove bullet points */
+        display: flex; /* Flexbox for horizontal alignment */
+      }
+
+      .nav-links li {
+        margin: 0 15px; /* Margin between items */
+      }
+
+      .nav-links a {
+        text-decoration: none; /* Remove underline from links */
+        color: white; /* White link color */
+        transition: color 0.3s ease; /* Smooth color transition */
+        padding: 5px 10px; /* Padding for links */
+        border-radius: 5px; /* Rounded corners */
+      }
+
+      .nav-links a:hover {
+        background-color: #ff9800; /* Orange background on hover */
+        color: white; /* Keep text color white on hover */
       }
 
       .container {
         text-align: center;
-        padding: 20px;
         border-radius: 15px;
-        background-color: #ffffff;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
       }
 
       /* Clock and Date Styling */
       #clock {
-        font-size: 56px;
+        font-size: 48px;
         margin-bottom: 10px;
-        padding: 15px;
-        border: 4px solid;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transition: border-color 0.3s ease;
+        padding: 10px;
+        border: 4px solid #61dafb;
+        border-radius: 10px;
       }
 
       #date {
         font-size: 24px;
         margin-bottom: 20px;
-        padding: 10px;
-        border: 3px solid;
+        padding: 5px;
+        border: 3px solid #61dafb;
         border-radius: 10px;
-        transition: border-color 0.3s ease;
       }
 
       /* Button and Input Styles */
@@ -57,13 +95,10 @@
         border-radius: 5px;
         cursor: pointer;
         font-size: 16px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        transition: box-shadow 0.3s ease, transform 0.3s ease;
       }
 
       button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        opacity: 0.8;
       }
 
       /* Hidden Elements */
@@ -78,82 +113,59 @@
         margin-bottom: 10px;
         padding: 10px;
         border-radius: 10px;
-        border: 3px solid;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        transition: border-color 0.3s ease;
+      }
+
+      #timer-display {
+        border: 3px solid #ffa726;
+      }
+
+      #stopwatch-display {
+        border: 3px solid #39ff14;
       }
 
       /* Theme: Light Mode */
       :root {
-        --bg-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-        --primary-color: #61dafb;
-        --secondary-color: #ffa726;
-        --accent-color: #39ff14;
+        --bg-color: #f0f0f0;
         --text-color: #282c34;
-        --container-bg: #ffffff;
-        --border-color: var(--primary-color);
+        --button-bg-color: #61dafb;
+        --button-text-color: #282c34;
       }
 
       /* Theme: Dark Mode */
       .dark-theme {
-        --bg-gradient: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-        --primary-color: #444;
-        --secondary-color: #888;
-        --accent-color: #39ff14;
-        --text-color: #ffffff;
-        --container-bg: #333333;
-        --border-color: #888;
+        --bg-color: #282c34;
+        --text-color: black;
+        --button-bg-color: #444;
+        --button-text-color: #ffffff;
       }
 
       /* Theme: Neon Mode */
       .neon-theme {
-        --bg-gradient: linear-gradient(
-          135deg,
-          #0f0c29 0%,
-          #302b63 50%,
-          #24243e 100%
-        );
-        --primary-color: #39ff14;
-        --secondary-color: #ff00ff;
-        --accent-color: #00ff00;
-        --text-color: #ffffff;
-        --container-bg: #181818;
-        --border-color: var(--primary-color);
+        --bg-color: #0a0a0a;
+        --text-color: #39ff14;
+        --button-bg-color: #ff00ff;
+        --button-text-color: #ffffff;
       }
 
       /* Theme: Sunset Mode */
       .sunset-theme {
-        --bg-gradient: linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%);
-        --primary-color: #ff6f61;
-        --secondary-color: #fdd835;
-        --accent-color: #ffb74d;
-        --text-color: #ffffff;
-        --container-bg: #ff6f61;
-        --border-color: var(--primary-color);
+        --bg-color: #ff6f61;
+        --text-color: #1c1c1c;
+        --button-bg-color: #ffa726;
+        --button-text-color: #1c1c1c;
       }
 
       /* Apply Theme Colors */
       body {
-        background: var(--bg-gradient);
+        background-color: var(--bg-color);
         color: var(--text-color);
-      }
-
-      .container {
-        background-color: var(--container-bg);
-      }
-
-      #clock,
-      #date,
-      #timer-display,
-      #stopwatch-display {
-        border-color: var(--border-color);
       }
 
       button,
       input,
       select {
-        background-color: var(--primary-color);
-        color: var(--text-color);
+        background-color: var(--button-bg-color);
+        color: var(--button-text-color);
       }
 
       /* Theme Selector Dropdown */
@@ -165,7 +177,46 @@
 
       /* Alarm Section */
       #alarm-message {
-        color: var(--primary-color);
+        color: var(--button-bg-color);
+      }
+
+      /* To-Do List Styles */
+      #todo-container {
+        display: none; /* Initially hidden */
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        border: 2px solid #61dafb;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        z-index: 1000;
+      }
+
+      #todo-list {
+        list-style: none; /* Remove bullet points */
+        padding: 0; /* Remove padding */
+      }
+
+      .todo-item {
+        display: flex; /* Flexbox for horizontal alignment */
+        justify-content: space-between; /* Space between elements */
+        align-items: center; /* Center items vertically */
+        margin-bottom: 10px; /* Space between items */
+      }
+
+      .close-btn {
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .close-btn:hover {
+        opacity: 0.8;
       }
     </style>
   </head>
@@ -175,11 +226,19 @@
       <select id="theme-selector">
         <option value="light">Light Theme</option>
         <option value="dark">Dark Theme</option>
-        <option value="neon">Neon Theme</option>
         <option value="sunset">Sunset Theme</option>
       </select>
     </div>
-
+    <nav class="navbar">
+      <div class="container1">
+        <h1 class="logo">Clock-</h1>
+        <ul class="nav-links">
+          <li><a href="alarm.html">Alarm</a></li>
+          <li><a href="stopwatch.html">Stopwatch</a></li>
+          <li><a href="timer.html">Timer</a></li>
+        </ul>
+      </div>
+    </nav>
     <div class="container">
       <!-- Clock Display -->
       <div id="clock">00:00:00</div>
@@ -201,32 +260,20 @@
         <option value="Asia/Tokyo">Tokyo (JST)</option>
       </select>
 
-      <!-- Alarm Section -->
-      <h3>Set Alarm</h3>
-      <input type="time" id="alarm-time" />
-      <button id="set-alarm">Set Alarm</button>
-      <p id="alarm-message"></p>
-
-      <!-- Timer Section -->
-      <h3>Set Timer</h3>
-      <input type="number" id="timer-minutes" placeholder="Minutes" min="0" />
-      <input type="number" id="timer-seconds" placeholder="Seconds" min="0" />
-      <button id="start-timer">Start Timer</button>
-      <p id="timer-display">00:00</p>
-      <button id="reset-timer" class="hidden">Reset Timer</button>
-
-      <!-- Stopwatch Section -->
-      <h3>Stopwatch</h3>
-      <div id="stopwatch-display">00:00:00</div>
-      <button id="start-stopwatch">Start</button>
-      <button id="pause-stopwatch">Pause</button>
-      <button id="reset-stopwatch">Reset</button>
-
       <!-- Minimal Mode Button -->
       <button id="minimal-mode-toggle">Minimal Mode</button>
 
-      <!-- Alarm Sound -->
-      <audio id="alarm-sound" src="alarm.mp3" preload="auto"></audio>
+      <!-- To-Do List Button -->
+      <button id="todo-btn">Open To-Do List</button>
+    </div>
+
+    <!-- To-Do List Modal -->
+    <div id="todo-container">
+      <h2>To-Do List</h2>
+      <input type="text" id="todo-input" placeholder="Add a new task" />
+      <button id="add-todo-btn">Add Task</button>
+      <ul id="todo-list"></ul>
+      <button id="close-todo-btn" class="close-btn">Close</button>
     </div>
 
     <script>
@@ -249,6 +296,15 @@
           now
         );
         document.getElementById("clock").textContent = timeString;
+
+        // Check current hour to change theme dynamically
+        const hour = now.getHours();
+        if (hour >= 16 || hour < 6) {
+          document.body.classList.add("dark-theme");
+          document.body.classList.remove("light-theme");
+        } else {
+          document.body.classList.remove("dark-theme");
+        }
       }
 
       // Update the date display
@@ -261,57 +317,100 @@
           month: "long",
           day: "numeric",
         };
-
         const dateString = new Intl.DateTimeFormat("en-US", options).format(
           now
         );
         document.getElementById("date").textContent = dateString;
       }
 
-      // Initial call to display time and date
-      setInterval(() => {
-        updateClock();
-        updateDate();
-      }, 1000);
+      // Update both clock and date every second
+      setInterval(updateClock, 1000);
+      setInterval(updateDate, 1000);
 
-      // Toggle between 12-hour and 24-hour format
-      document.getElementById("timeFormat").addEventListener("change", (e) => {
-        is12HourFormat = e.target.checked;
-      });
-
-      // Toggle to show or hide seconds
-      document.getElementById("showSeconds").addEventListener("change", (e) => {
-        showSeconds = e.target.checked;
-      });
-
-      // Change timezone
-      document.getElementById("timezone").addEventListener("change", (e) => {
-        currentTimezone = e.target.value;
-      });
-
-      // Theme change functionality
+      // Event listener for showing seconds toggle
       document
-        .getElementById("theme-selector")
+        .getElementById("showSeconds")
         .addEventListener("change", function () {
-          const theme = this.value;
-          document.body.className = `${theme}-theme`;
+          showSeconds = this.checked;
         });
 
-      // Minimal mode toggle
+      // Event listener for 12-hour format toggle
+      document
+        .getElementById("timeFormat")
+        .addEventListener("change", function () {
+          is12HourFormat = this.checked;
+        });
+
+      // Event listener for timezone change
+      document
+        .getElementById("timezone")
+        .addEventListener("change", function () {
+          currentTimezone = this.value;
+          updateClock();
+          updateDate();
+        });
+
+      // Theme Change Functionality
+      const root = document.documentElement;
+      const themeSelector = document.getElementById("theme-selector");
+
+      themeSelector.addEventListener("change", (event) => {
+        const selectedTheme = event.target.value;
+        root.className = `${selectedTheme}-theme`;
+      });
+
+      // Minimal Mode Toggle
       let minimalMode = false;
+
       document
         .getElementById("minimal-mode-toggle")
         .addEventListener("click", () => {
           minimalMode = !minimalMode;
-          document.querySelector(".container").style.display = minimalMode
+          document.querySelector(".container1").style.display = minimalMode
             ? "none"
             : "block";
           document.getElementById("minimal-mode-toggle").textContent =
             minimalMode ? "Exit Minimal Mode" : "Minimal Mode";
         });
 
-      // Alarm, timer, stopwatch functionalities remain unchanged
-      // (Refer to the previous code provided for these parts)
+      // To-Do List Functionality
+      const todoContainer = document.getElementById("todo-container");
+      const todoInput = document.getElementById("todo-input");
+      const todoList = document.getElementById("todo-list");
+      const addTodoBtn = document.getElementById("add-todo-btn");
+      const todoBtn = document.getElementById("todo-btn");
+      const closeTodoBtn = document.getElementById("close-todo-btn");
+
+      // Open To-Do List
+      todoBtn.addEventListener("click", () => {
+        todoContainer.style.display = "block";
+      });
+
+      // Close To-Do List
+      closeTodoBtn.addEventListener("click", () => {
+        todoContainer.style.display = "none";
+      });
+
+      // Add To-Do Item
+      addTodoBtn.addEventListener("click", () => {
+        const taskText = todoInput.value;
+        if (taskText) {
+          const li = document.createElement("li");
+          li.classList.add("todo-item");
+          li.innerHTML = `
+            <input type="checkbox" />
+            <span>${taskText}</span>
+            <button class="delete-btn">Delete</button>
+          `;
+          todoList.appendChild(li);
+          todoInput.value = ""; // Clear input field
+
+          // Delete Task
+          li.querySelector(".delete-btn").addEventListener("click", () => {
+            todoList.removeChild(li);
+          });
+        }
+      });
     </script>
   </body>
 </html>

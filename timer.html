@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Countdown Timer</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(135deg, #000000 0%, #000000 100%);
+        display: flex;
+        flex-direction: column; /* Stack navbar and container vertically */
+        align-items: center;
+        justify-content: flex-start; /* Align items to the top */
+        height: 100vh;
+        margin: 0;
+        color: #fff;
+      }
+
+      /* Navbar Styles */
+      .navbar {
+        background-color: #333; /* Dark background for the navbar */
+        color: white; /* White text color */
+        padding: 15px 20px; /* Padding for the navbar */
+        position: sticky; /* Make the navbar stick to the top */
+        top: 0; /* Stick to the top */
+        width: 100%; /* Full width */
+        z-index: 1000; /* Ensure it stays above other elements */
+      }
+
+      .container {
+        background: rgba(0, 0, 0, 0.6);
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        margin-top: 20px; /* Add space below the navbar */
+      }
+
+      h1 {
+        font-size: 2.5em;
+        margin-bottom: 20px;
+      }
+
+      #timer-display {
+        font-size: 5em;
+        margin: 20px 0;
+        padding: 10px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        border: 4px solid #fff;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Button and Input Styles */
+      input {
+        padding: 10px;
+        width: 70px;
+        font-size: 1.2em;
+        text-align: center;
+        margin-right: 10px;
+        border: none;
+        border-radius: 5px;
+        outline: none;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 1.2em;
+        background: #39ff14;
+        border: none;
+        border-radius: 5px;
+        color: #333;
+        cursor: pointer;
+        margin: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        transition: background 0.3s ease, transform 0.2s ease;
+      }
+
+      button:hover {
+        background: #2ecc71;
+        transform: translateY(-3px);
+      }
+
+      button:disabled {
+        background: #95a5a6;
+        cursor: not-allowed;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navbar -->
+    <nav class="navbar">
+      <div class="container1">
+        <h1 class="logo">Clock-</h1>
+        <ul
+          class="nav-links"
+          style="list-style: none; display: flex; padding: 0"
+        >
+          <li style="margin: 0 15px">
+            <a href="alarm.html" style="color: white; text-decoration: none"
+              >Alarm</a
+            >
+          </li>
+          <li style="margin: 0 15px">
+            <a href="stopwatch.html" style="color: white; text-decoration: none"
+              >Stopwatch</a
+            >
+          </li>
+          <li style="margin: 0 15px">
+            <a href="timer.html" style="color: white; text-decoration: none"
+              >Timer</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <h1>Countdown Timer</h1>
+
+      <!-- Timer Display -->
+      <div id="timer-display">00:00</div>
+
+      <!-- Input Fields -->
+      <input type="number" id="minutes" placeholder="Min" min="0" />
+      <input type="number" id="seconds" placeholder="Sec" min="0" />
+
+      <!-- Control Buttons -->
+      <div>
+        <button id="start-timer">Start</button>
+        <button id="pause-timer" class="hidden">Pause</button>
+        <button id="resume-timer" class="hidden">Resume</button>
+        <button id="reset-timer" class="hidden">Reset</button>
+      </div>
+    </div>
+
+    <script>
+      let timerInterval;
+      let totalTime = 0;
+      let isPaused = false;
+
+      const timerDisplay = document.getElementById("timer-display");
+      const startButton = document.getElementById("start-timer");
+      const pauseButton = document.getElementById("pause-timer");
+      const resumeButton = document.getElementById("resume-timer");
+      const resetButton = document.getElementById("reset-timer");
+
+      function updateDisplay(minutes, seconds) {
+        timerDisplay.textContent = `${minutes < 10 ? "0" : ""}${minutes}:${
+          seconds < 10 ? "0" : ""
+        }${seconds}`;
+      }
+
+      function updateTimer() {
+        if (totalTime <= 0) {
+          clearInterval(timerInterval);
+          alert("Time's up!");
+          resetTimer();
+        } else {
+          totalTime--;
+          const minutes = Math.floor(totalTime / 60);
+          const seconds = totalTime % 60;
+          updateDisplay(minutes, seconds);
+        }
+      }
+
+      // Start Timer Functionality
+      startButton.addEventListener("click", () => {
+        const minutes = parseInt(document.getElementById("minutes").value) || 0;
+        const seconds = parseInt(document.getElementById("seconds").value) || 0;
+        totalTime = minutes * 60 + seconds;
+
+        if (totalTime > 0) {
+          timerInterval = setInterval(updateTimer, 1000);
+          startButton.classList.add("hidden");
+          pauseButton.classList.remove("hidden");
+          resetButton.classList.remove("hidden");
+          document.getElementById("minutes").disabled = true;
+          document.getElementById("seconds").disabled = true;
+        }
+      });
+
+      // Pause Timer Functionality
+      pauseButton.addEventListener("click", () => {
+        clearInterval(timerInterval);
+        isPaused = true;
+        pauseButton.classList.add("hidden");
+        resumeButton.classList.remove("hidden");
+      });
+
+      // Resume Timer Functionality
+      resumeButton.addEventListener("click", () => {
+        if (isPaused) {
+          timerInterval = setInterval(updateTimer, 1000);
+          isPaused = false;
+          resumeButton.classList.add("hidden");
+          pauseButton.classList.remove("hidden");
+        }
+      });
+
+      // Reset Timer Functionality
+      resetButton.addEventListener("click", () => {
+        resetTimer();
+      });
+
+      function resetTimer() {
+        clearInterval(timerInterval);
+        totalTime = 0;
+        updateDisplay(0, 0);
+        startButton.classList.remove("hidden");
+        pauseButton.classList.add("hidden");
+        resumeButton.classList.add("hidden");
+        resetButton.classList.add("hidden");
+        document.getElementById("minutes").disabled = false;
+        document.getElementById("seconds").disabled = false;
+        document.getElementById("minutes").value = "";
+        document.getElementById("seconds").value = "";
+      }
+    </script>
+  </body>
+</html>
